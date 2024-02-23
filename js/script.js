@@ -3,6 +3,8 @@ const username = "jeanette-f";
 const repoList = document.querySelector (".repo-list");
 const repoSection = document.querySelector(".repos");
 const repoDataList = document.querySelector (".repo-data");
+const viewReposButton = document.querySelector (".view-repos");
+const filterInput = document.querySelector (".filter-repos");
 
 const gitUserInfo = async function () {
     const userInfo = await fetch (`https://api.github.com/users/${username}`);
@@ -39,6 +41,7 @@ const gitRepos = async function () {
 };
 
 const displayRepos = function (repos) {
+    filterInput.classList.remove ("hide");
     for (const repo of repos) {
         const repoItem = document.createElement ("li");
         repoItem.classList.add ("repo");
@@ -84,4 +87,26 @@ const displayRepoInfo = function (repoInfo, languages) {
     repoDataList.append(div);
     repoDataList.classList.remove ("hide");
     repoSection.classList.add ("hide");
+    viewReposButton.classList.remove ("hide");
 };
+
+viewReposButton.addEventListener ("click", function() {
+    repoSection.classList.remove ("hide");
+    repoDataList.classList.add ("hide");
+    viewReposButton.classList.add ("hide");
+});
+
+filterInput.addEventListener ("input", function(e){
+    const searchText = e.target.value;
+    const repos = document.querySelectorAll (".repo");
+    const searchLowerText = searchText.toLowerCase();
+    
+    for (const repo of repos) {
+        let lowerRepoName = repo.innerText.toLowerCase();
+        if (lowerRepoName.includes(searchLowerText)) {
+            repo.classList.remove ("hide");
+        } else {
+            repo.classList.add ("hide");
+        }
+    }
+});
